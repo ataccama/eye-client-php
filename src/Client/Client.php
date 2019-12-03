@@ -89,12 +89,12 @@
                         DateTime::from($curl->response->dtExpired), $curl->response->ipAddress,
                         $sessionDefinition->user);
                 case 403:
-                    if (isset($curl->response->message)) {
-                        throw new Unauthorized($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
                     }
                 default:
-                    if (isset($curl->response->message)) {
-                        throw new AtaccamaEyeApiError($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
                     }
             }
             throw new UnknownError("A new session creation failed. Response: " . json_encode($curl->response));
@@ -128,12 +128,12 @@
 
                     return $session;
                 case 403:
-                    if (isset($curl->response->message)) {
-                        throw new Unauthorized($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
                     }
                 default:
-                    if (isset($curl->response->message)) {
-                        throw new AtaccamaEyeApiError($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
                     }
             }
             throw new UnknownError("Getting a session failed. Response: " . json_encode($curl->response));
@@ -173,12 +173,12 @@
                     // ok
                     return (new ActivityMapper($curl->response))->getObject();
                 case 403:
-                    if (isset($curl->response->message)) {
-                        throw new Unauthorized($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
                     }
                 default:
-                    if (isset($curl->response->message)) {
-                        throw new AtaccamaEyeApiError($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
                     }
             }
             throw new UnknownError("A creation a new activity failed. Response: " . json_encode($curl->response));
@@ -223,12 +223,12 @@
 
                     return $activities;
                 case 403:
-                    if (isset($curl->response->message)) {
-                        throw new Unauthorized($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
                     }
                 default:
-                    if (isset($curl->response->message)) {
-                        throw new AtaccamaEyeApiError($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
                     }
             }
             throw new UnknownError("Getting activities failed. Response: " . json_encode($curl->response));
@@ -255,12 +255,12 @@
                     // ok
                     return (new ProfileMapper($curl->response))->getObject();
                 case 403:
-                    if (isset($curl->response->message)) {
-                        throw new Unauthorized($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
                     }
                 default:
-                    if (isset($curl->response->message)) {
-                        throw new AtaccamaEyeApiError($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
                     }
             }
             throw new UnknownError("A new user creation failed. Response: " . json_encode($curl->response));
@@ -297,12 +297,12 @@
                     // ok
                     return (new ProfileMapper($curl->response))->getObject();
                 case 403:
-                    if (isset($curl->response->message)) {
-                        throw new Unauthorized($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
                     }
                 default:
-                    if (isset($curl->response->message)) {
-                        throw new AtaccamaEyeApiError($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
                     }
             }
             throw new UnknownError("Getting an user failed. Response: " . json_encode($curl->response));
@@ -365,12 +365,12 @@
                     // ok
                     return true;
                 case 403:
-                    if (isset($curl->response->message)) {
-                        throw new Unauthorized($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
                     }
                 default:
-                    if (isset($curl->response->message)) {
-                        throw new AtaccamaEyeApiError($curl->response->message);
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
                     }
             }
             throw new UnknownError("Identification of a session failed. Response: " . json_encode($curl->response));
