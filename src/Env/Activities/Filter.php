@@ -92,10 +92,10 @@
                 $str .= "e=" . $this->email->definition;
             }
             if (!empty($this->dtFrom)) {
-                $str .= "dtF=" . $this->dtFrom->getTimestamp();
+                $str .= "dtF=" . $this->dtFrom->format("Ymd");
             }
             if (!empty($this->dtTo)) {
-                $str .= "dtT=" . $this->dtTo->getTimestamp();
+                $str .= "dtT=" . $this->dtTo->format("Ymd");
             }
             if (!empty($this->typeIds)) {
                 $str .= "a=" . implode(",", $this->typeIds);
