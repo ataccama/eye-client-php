@@ -181,7 +181,7 @@
                         throw new AtaccamaEyeApiError($curl->response->message);
                     }
             }
-            throw new UnknownError("A new activity creation failed. Response: " . json_encode($curl->response));
+            throw new UnknownError("A creation a new activity failed. Response: " . json_encode($curl->response));
         }
 
         public function listActivities(Filter $filter): ActivityList
@@ -231,7 +231,7 @@
                         throw new AtaccamaEyeApiError($curl->response->message);
                     }
             }
-            throw new UnknownError("A new activity creation failed. Response: " . json_encode($curl->response));
+            throw new UnknownError("Getting activities failed. Response: " . json_encode($curl->response));
         }
 
         /**
@@ -263,7 +263,7 @@
                         throw new AtaccamaEyeApiError($curl->response->message);
                     }
             }
-            throw new UnknownError("A new activity creation failed. Response: " . json_encode($curl->response));
+            throw new UnknownError("A new user creation failed. Response: " . json_encode($curl->response));
         }
 
         /**
@@ -305,7 +305,7 @@
                         throw new AtaccamaEyeApiError($curl->response->message);
                     }
             }
-            throw new UnknownError("A new activity creation failed. Response: " . json_encode($curl->response));
+            throw new UnknownError("Getting an user failed. Response: " . json_encode($curl->response));
         }
 
         /**
@@ -337,7 +337,7 @@
                         throw new AtaccamaEyeApiError($curl->response->message);
                     }
             }
-            throw new UnknownError("A new activity creation failed. Response: " . json_encode($curl->response));
+            throw new UnknownError("Updating an user failed. Response: " . json_encode($curl->response));
         }
 
         /**
@@ -373,6 +373,6 @@
                         throw new AtaccamaEyeApiError($curl->response->message);
                     }
             }
-            throw new UnknownError("A new activity creation failed. Response: " . json_encode($curl->response));
+            throw new UnknownError("Identification of a session failed. Response: " . json_encode($curl->response));
         }
     }
