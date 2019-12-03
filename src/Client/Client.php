@@ -44,6 +44,9 @@
         /** @var DataStorage */
         private $cache;
 
+        /** @var string */
+        private $cacheExpiration;
+
         /**
          * Client constructor.
          * @param string $host
@@ -59,10 +62,12 @@
 
         /**
          * @param DataStorage $dataStorage
+         * @param string      $cacheExpiration
          */
-        public function setCache(DataStorage $dataStorage): void
+        public function setCache(DataStorage $dataStorage, string $cacheExpiration = "+1 day"): void
         {
             $this->cache = $dataStorage;
+            $this->cacheExpiration = $cacheExpiration;
         }
 
         /**
@@ -150,7 +155,7 @@
                     }
 
                     if (isset($this->cache)) {
-                        $this->cache->add(new SessionKey($session), $session);
+                        $this->cache->add(new SessionKey($session), $session, $this->cacheExpiration);
                     }
 
                     return $session;
@@ -256,7 +261,7 @@
                     }
 
                     if (isset($this->cache)) {
-                        $this->cache->add(new ActivityListKey($filter), $activities);
+                        $this->cache->add(new ActivityListKey($filter), $activities, $this->cacheExpiration);
                     }
 
                     return $activities;
@@ -343,7 +348,7 @@
                     // ok
                     $user = (new ProfileMapper($curl->response))->getObject();
                     if (isset($this->cache)) {
-                        $this->cache->add(new UserKey($filter), $user);
+                        $this->cache->add(new UserKey($filter), $user, $this->cacheExpiration);
                     }
 
                     return $user;
