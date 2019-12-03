@@ -17,6 +17,7 @@
         const EMAIL = "email";
         const IP_ADDRESS = "ip_address";
         const CONTINENTS = "continents";
+        const METADATA_SEARCH = "metadata_search";
 
         /** @var Email|null */
         public $email;
@@ -35,6 +36,9 @@
 
         /** @var DateTime */
         public $dtTo;
+
+        /** @var MetadataSearch|null */
+        public $metadataSearch;
 
         /**
          * ActivityFilter constructor.
@@ -57,6 +61,9 @@
             }
             if (isset($options[self::IP_ADDRESS]) && !empty($options[self::IP_ADDRESS])) {
                 $this->ipAddress = $options[self::IP_ADDRESS];
+            }
+            if (isset($options[self::METADATA_SEARCH]) && !empty($options[self::METADATA_SEARCH])) {
+                $this->metadataSearch = $options[self::METADATA_SEARCH];
             }
             if (!empty($activityTypeIds)) {
                 foreach ($activityTypeIds as $typeId) {

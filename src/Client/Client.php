@@ -201,6 +201,12 @@
             if (!empty($filter->continents)) {
                 $data["continentIso2s"] = $filter->continents;
             }
+            if (!empty($filter->metadataSearch)) {
+                $data["metadataSearchTerm"] = $filter->metadataSearch->value;
+                if (!empty($filter->metadataSearch->key)) {
+                    $data["metadataKey"] = $filter->metadataSearch->key;
+                }
+            }
 
             // API call
             $curl = new Curl();
