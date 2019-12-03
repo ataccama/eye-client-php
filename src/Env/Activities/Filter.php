@@ -78,4 +78,32 @@
                 $this->continents[] = $options[self::CONTINENTS];
             }
         }
+
+        public function __toString(): string
+        {
+            $str = "";
+            if (!empty($this->ipAddress)) {
+                $str .= "ip=" . $this->ipAddress;
+            }
+            if (!empty($this->metadataSearch)) {
+                $str .= "s=" . $this->metadataSearch->key . "|" . $this->metadataSearch->value;
+            }
+            if (!empty($this->email)) {
+                $str .= "e=" . $this->email->definition;
+            }
+            if (!empty($this->dtFrom)) {
+                $str .= "dtF=" . $this->dtFrom->getTimestamp();
+            }
+            if (!empty($this->dtTo)) {
+                $str .= "dtT=" . $this->dtTo->getTimestamp();
+            }
+            if (!empty($this->typeIds)) {
+                $str .= "a=" . implode(",", $this->typeIds);
+            }
+            if (!empty($this->continents)) {
+                $str .= "c=" . implode(",", $this->continents);
+            }
+
+            return md5(sha1($str));
+        }
     }

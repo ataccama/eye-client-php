@@ -4,11 +4,15 @@
 
     use Ataccama\Common\Env\Entry;
     use Ataccama\Common\Env\IEntry;
+    use Ataccama\Common\Utils\Cache\DataStorage;
     use Ataccama\Eye\Client\Env\Activities\Activity;
     use Ataccama\Eye\Client\Env\Activities\ActivityDefinition;
     use Ataccama\Eye\Client\Env\Activities\ActivityList;
     use Ataccama\Eye\Client\Env\Activities\Filter;
     use Ataccama\Eye\Client\Env\Activities\MetadataList;
+    use Ataccama\Eye\Client\Env\CacheKeys\ActivityListKey;
+    use Ataccama\Eye\Client\Env\CacheKeys\SessionKey;
+    use Ataccama\Eye\Client\Env\CacheKeys\UserKey;
     use Ataccama\Eye\Client\Env\Sessions\Session;
     use Ataccama\Eye\Client\Env\Sessions\SessionDefinition;
     use Ataccama\Eye\Client\Env\Users\User;
@@ -37,6 +41,9 @@
         /** @var int */
         private $version;
 
+        /** @var DataStorage */
+        private $cache;
+
         /**
          * Client constructor.
          * @param string $host
@@ -51,11 +58,19 @@
         }
 
         /**
+         * @param DataStorage $dataStorage
+         */
+        public function setCache(DataStorage $dataStorage): void
+        {
+            $this->cache = $dataStorage;
+        }
+
+        /**
          * @return string
          */
         private function getBaseUri(): string
         {
-            return $this->host . "/v" . "$this->version";
+            return $this->host . "/api/v" . "$this->version";
         }
 
         /**
@@ -107,9 +122,17 @@
          * @throws Unauthorized
          * @throws UnknownError
          * @throws \ErrorException
+         * @throws \Throwable
          */
         public function getSession(IEntry $session): Session
         {
+            if (isset($this->cache)) {
+                $_session = $this->cache->get(new SessionKey($session));
+                if ($_session !== null) {
+                    return $_session;
+                }
+            }
+
             // API call
             $curl = new Curl();
             $curl->setHeader("Authorization", "Bearer $this->bearer");
@@ -124,6 +147,10 @@
 
                     foreach ($curl->response->activities as $activity) {
                         $session->activities->add((new ActivityMapper($activity))->getObject());
+                    }
+
+                    if (isset($this->cache)) {
+                        $this->cache->add(new SessionKey($session), $session);
                     }
 
                     return $session;
@@ -186,6 +213,13 @@
 
         public function listActivities(Filter $filter): ActivityList
         {
+            if (isset($this->cache)) {
+                $activities = $this->cache->get(new ActivityListKey($filter));
+                if ($activities !== null) {
+                    return $activities;
+                }
+            }
+
             // data
             $data = [
                 "dtFrom"          => $filter->dtFrom->format("Y-m-d"),
@@ -219,6 +253,10 @@
                     $activities = new ActivityList();
                     foreach ($curl->response as $activity) {
                         $activities->add((new ActivityMapper($activity))->getObject());
+                    }
+
+                    if (isset($this->cache)) {
+                        $this->cache->add(new ActivityListKey($filter), $activities);
                     }
 
                     return $activities;
@@ -273,9 +311,17 @@
          * @throws Unauthorized
          * @throws UnknownError
          * @throws \ErrorException
+         * @throws \Throwable
          */
         public function getUser(\Ataccama\Eye\Client\Env\Users\Filter $filter): User
         {
+            if (isset($this->cache)) {
+                $user = $this->cache->get(new UserKey($filter));
+                if ($user !== null) {
+                    return $user;
+                }
+            }
+
             $query = "";
             if (isset($filter->id)) {
                 $query = "id=$filter->id";
@@ -295,7 +341,12 @@
             switch ($curl->getHttpStatusCode()) {
                 case 200:
                     // ok
-                    return (new ProfileMapper($curl->response))->getObject();
+                    $user = (new ProfileMapper($curl->response))->getObject();
+                    if (isset($this->cache)) {
+                        $this->cache->add(new UserKey($filter), $user);
+                    }
+
+                    return $user;
                 case 403:
                     if (isset($curl->response->error)) {
                         throw new Unauthorized($curl->response->error);

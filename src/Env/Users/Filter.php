@@ -90,4 +90,23 @@
                 throw new NotDefined("At least one parameter must be set.");
             }
         }
+
+        public function __toString(): string
+        {
+            $str = "";
+            if (!empty($this->id)) {
+                $str .= "id=$this->id";
+            }
+            if (!empty($this->email)) {
+                $str .= "e=$this->email";
+            }
+            if (!empty($this->session)) {
+                $str .= "sid=" . $this->session->id;
+            }
+            if (!empty($this->keycloakId)) {
+                $str .= "kid=$this->keycloakId";
+            }
+
+            return md5(sha1($str));
+        }
     }
