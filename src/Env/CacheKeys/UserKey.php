@@ -2,36 +2,54 @@
 
     namespace Ataccama\Eye\Client\Env\CacheKeys;
 
-
+    use Ataccama\Common\Env\IEntry;
+    use Ataccama\Common\Exceptions\NotDefined;
+    use Ataccama\Common\Utils\Cache\EntryKey;
     use Ataccama\Common\Utils\Cache\IKey;
-    use Ataccama\Eye\Client\Env\Users\Filter;
+    use Ataccama\Common\Utils\Cache\Key;
+    use Ataccama\Eye\Client\Env\Users\User;
 
 
     /**
      * Class UserKey
      * @package Ataccama\Eye\Client\Env\CacheKeys
      */
-    class UserKey implements IKey
+    class UserKey extends EntryKey
     {
-        /** @var string */
-        private $id;
-
-        /**
-         * UserKey constructor.
-         * @param Filter $filter
-         */
-        public function __construct(Filter $filter)
-        {
-            $this->id = "$filter";
-        }
-
         public function getPrefix(): ?string
         {
             return "eye_api_user";
         }
 
-        public function getId()
+        /**
+         * @param User $user
+         * @return IKey
+         * @throws NotDefined
+         */
+        public static function keycloakKey(User $user): IKey
         {
-            return $this->id;
+            if (!empty($user->keycloakId)) {
+                return new Key($user->keycloakId, UserFilterKey::PREFIX);
+            }
+
+            throw new NotDefined("Key cannot be defined.");
+        }
+
+        /**
+         * @param IEntry $session
+         * @return IKey
+         */
+        public static function sessionKey(IEntry $session): IKey
+        {
+            return new Key($session->id, UserFilterKey::PREFIX);
+        }
+
+        /**
+         * @param User $user
+         * @return IKey
+         */
+        public static function emailKey(User $user): IKey
+        {
+            return new Key($user->email, UserFilterKey::PREFIX);
         }
     }

@@ -12,6 +12,7 @@
     use Ataccama\Eye\Client\Env\Activities\MetadataList;
     use Ataccama\Eye\Client\Env\CacheKeys\ActivityListKey;
     use Ataccama\Eye\Client\Env\CacheKeys\SessionKey;
+    use Ataccama\Eye\Client\Env\CacheKeys\UserFilterKey;
     use Ataccama\Eye\Client\Env\CacheKeys\UserKey;
     use Ataccama\Eye\Client\Env\Sessions\Session;
     use Ataccama\Eye\Client\Env\Sessions\SessionDefinition;
@@ -321,9 +322,19 @@
         public function getUser(\Ataccama\Eye\Client\Env\Users\Filter $filter): User
         {
             if (isset($this->cache)) {
-                $user = $this->cache->get(new UserKey($filter));
-                if ($user !== null) {
-                    return $user;
+                if (empty($filter->id)) {
+                    $userKey = $this->cache->get(new UserFilterKey($filter));
+                    if ($userKey !== null) {
+                        $user = $this->cache->get($userKey);
+                        if ($user !== null) {
+                            return $user;
+                        }
+                    }
+                } else {
+                    $user = $this->cache->get(new UserKey(new Entry($filter->id)));
+                    if ($user !== null) {
+                        return $user;
+                    }
                 }
             }
 
@@ -348,7 +359,15 @@
                     // ok
                     $user = (new ProfileMapper($curl->response))->getObject();
                     if (isset($this->cache)) {
-                        $this->cache->add(new UserKey($filter), $user, $this->cacheExpiration);
+                        $this->cache->add(new UserKey($user), $user, $this->cacheExpiration);
+                        $this->cache->add(UserKey::emailKey($user), new UserKey($user), $this->cacheExpiration);
+                        if (!empty($user->keycloakId)) {
+                            $this->cache->add(UserKey::keycloakKey($user), new UserKey($user), $this->cacheExpiration);
+                        }
+                        foreach ($user->sessions as $session) {
+                            $this->cache->add(UserKey::sessionKey($session), new UserKey($user),
+                                $this->cacheExpiration);
+                        }
                     }
 
                     return $user;
