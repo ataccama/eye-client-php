@@ -19,7 +19,9 @@
         {
             $activity = new Activity($input->id, DateTime::from($input->dtCreated), new Entry($input->sessionId),
                 new Type($input->type->id, $input->type->name), $input->ipAddress);
-            $activity->countryCode = $input->countryCode;
+            if (!empty($input->country)) {
+                $activity->countryCode = $input->country->iso2;
+            }
 
             //foreach ($input->tags as $tag)
 

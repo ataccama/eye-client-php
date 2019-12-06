@@ -187,7 +187,7 @@
             $data = [
                 "sessionId"      => $activityDefinition->session->id,
                 "ipAddress"      => $activityDefinition->ipAddress,
-                "activityTypeId" => $activityDefinition->type->id
+                "typeId" => $activityDefinition->type->id
             ];
             if (isset($metadata)) {
                 foreach ($metadata as $pair) {
@@ -230,7 +230,7 @@
             $data = [
                 "dtFrom"          => $filter->dtFrom->format("Y-m-d"),
                 "dtTo"            => $filter->dtTo->format("Y-m-d"),
-                "activityTypeIds" => $filter->typeIds
+                "typeIds" => $filter->typeIds
             ];
             if (!empty($filter->ipAddress)) {
                 $data["ipAddress"] = $filter->ipAddress;
@@ -436,7 +436,7 @@
             ]);
 
             switch ($curl->getHttpStatusCode()) {
-                case 200:
+                case 204:
                     // ok
                     return true;
                 case 403:
