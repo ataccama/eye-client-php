@@ -16,6 +16,8 @@
     use Ataccama\Eye\Client\Env\CacheKeys\UserKey;
     use Ataccama\Eye\Client\Env\Sessions\Session;
     use Ataccama\Eye\Client\Env\Sessions\SessionDefinition;
+    use Ataccama\Eye\Client\Env\Tags\Tag;
+    use Ataccama\Eye\Client\Env\Tags\TagList;
     use Ataccama\Eye\Client\Env\Users\User;
     use Ataccama\Eye\Client\Env\Users\UserDefinition;
     use Ataccama\Eye\Client\Exceptions\AtaccamaEyeApiError;
@@ -24,6 +26,7 @@
     use Ataccama\Eye\Client\Mappers\ActivityMapper;
     use Ataccama\Eye\Client\Mappers\ProfileMapper;
     use Curl\Curl;
+    use Env\Tags\TagListKey;
     use Nette\Utils\DateTime;
 
 
@@ -185,9 +188,9 @@
         {
             // data
             $data = [
-                "sessionId"      => $activityDefinition->session->id,
-                "ipAddress"      => $activityDefinition->ipAddress,
-                "typeId" => $activityDefinition->type->id
+                "sessionId" => $activityDefinition->session->id,
+                "ipAddress" => $activityDefinition->ipAddress,
+                "typeId"    => $activityDefinition->type->id
             ];
             if (isset($metadata)) {
                 foreach ($metadata as $pair) {
@@ -228,8 +231,8 @@
 
             // data
             $data = [
-                "dtFrom"          => $filter->dtFrom->format("Y-m-d"),
-                "dtTo"            => $filter->dtTo->format("Y-m-d"),
+                "dtFrom"  => $filter->dtFrom->format("Y-m-d"),
+                "dtTo"    => $filter->dtTo->format("Y-m-d"),
                 "typeIds" => $filter->typeIds
             ];
             if (!empty($filter->ipAddress)) {
@@ -449,5 +452,52 @@
                     }
             }
             throw new UnknownError("Identification of a session failed. Response: " . json_encode($curl->response));
+        }
+
+        /**
+         * @return TagList
+         * @throws AtaccamaEyeApiError
+         * @throws Unauthorized
+         * @throws UnknownError
+         * @throws \ErrorException
+         * @throws \Throwable
+         */
+        public function listTags(): TagList
+        {
+            if (isset($this->cache)) {
+                $activities = $this->cache->get(new TagListKey());
+                if ($activities !== null) {
+                    return $activities;
+                }
+            }
+
+            // API call
+            $curl = new Curl();
+            $curl->setHeader("Authorization", "Bearer $this->bearer");
+            $curl->get($this->getBaseUri() . "/tags");
+
+            switch ($curl->getHttpStatusCode()) {
+                case 200:
+                    // ok
+                    $tags = new TagList();
+                    foreach ($curl->response as $tag) {
+                        $tags->add(new Tag($tag->id, $tag->name));
+                    }
+
+                    if (isset($this->cache)) {
+                        $this->cache->add(new TagListKey(), $tags, $this->cacheExpiration);
+                    }
+
+                    return $tags;
+                case 403:
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
+                    }
+                default:
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
+                    }
+            }
+            throw new UnknownError("Getting tags failed. Response: " . json_encode($curl->response));
         }
     }

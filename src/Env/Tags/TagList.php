@@ -3,6 +3,7 @@
     namespace Ataccama\Eye\Client\Env\Tags;
 
     use Ataccama\Common\Env\BaseArray;
+    use Nette\Utils\Strings;
 
 
     /**
@@ -32,6 +33,34 @@
             $tags = [];
             foreach ($this as $tag) {
                 $tags[] = $tag->toArray();
+            }
+
+            return $tags;
+        }
+
+        /**
+         * @param string $text
+         * @return TagList
+         */
+        public function findAppropriateTags(string $text): TagList
+        {
+            $tags = new TagList();
+            $text = strtolower($text);
+
+            foreach ($this as $tag) {
+                $tag->name = strtolower(str_replace("-", "_", $tag->name));
+                $exploded = explode("_", $tag->name);
+                $count = count($exploded);
+                foreach ($exploded as $tagPart) {
+                    if (!empty($tagPart)) {
+                        if (Strings::contains($text, $tagPart)) {
+                            $count--;
+                        }
+                    }
+                }
+                if ($count == 0) {
+                    $tags->add($tag);
+                }
             }
 
             return $tags;
