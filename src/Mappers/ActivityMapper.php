@@ -6,6 +6,7 @@
     use Ataccama\Eye\Client\Env\Activities\Activity;
     use Ataccama\Eye\Client\Env\Activities\Metadata;
     use Ataccama\Eye\Client\Env\Activities\Type;
+    use Ataccama\Eye\Client\Env\Tags\Tag;
     use Nette\Utils\DateTime;
 
 
@@ -23,7 +24,9 @@
                 $activity->countryCode = $input->country->iso2;
             }
 
-            //foreach ($input->tags as $tag)
+            foreach ($input->tags as $tag) {
+                $activity->tags->add(new Tag($tag->id, $tag->name));
+            }
 
             foreach ($input->metadata as $metadata) {
                 $activity->metadata->add(new Metadata($metadata->key, $metadata->value));
