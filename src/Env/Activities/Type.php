@@ -6,7 +6,6 @@
     use Ataccama\Common\Env\IArray;
     use Ataccama\Common\Env\IEntry;
     use Ataccama\Common\Env\IPair;
-    use Ataccama\Common\Env\Pair;
 
 
     /**
@@ -28,9 +27,14 @@
             $this->id = $id;
         }
 
-        public function toPair(): Pair
+        public function getKey()
         {
-            return new Pair($this->id, $this->name);
+            return $this->id;
+        }
+
+        public function getValue()
+        {
+            return $this->name;
         }
 
         public function toArray(): array

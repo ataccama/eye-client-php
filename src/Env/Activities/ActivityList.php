@@ -1,7 +1,7 @@
 <?php
 
     namespace Ataccama\Eye\Client\Env\Activities;
-    
+
     use Ataccama\Common\Env\BaseArray;
     use Nette\SmartObject;
     use Nette\Utils\DateTime;
@@ -24,7 +24,9 @@
          */
         public function add($activity)
         {
-            return parent::add($activity);
+            parent::add($activity);
+
+            return $this;
         }
 
         /**
