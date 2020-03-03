@@ -36,4 +36,19 @@
 
             return $data;
         }
+
+        /**
+         * @param string $key
+         * @return Metadata|null
+         */
+        public function findKey(string $key)
+        {
+            foreach ($this as $metadata) {
+                if ($metadata->getKey() == $key) {
+                    return clone $metadata;
+                }
+            }
+
+            return null;
+        }
     }
