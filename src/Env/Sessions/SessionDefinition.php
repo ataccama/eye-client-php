@@ -12,7 +12,7 @@
      */
     class SessionDefinition
     {
-        /** @var IEntry */
+        /** @var IEntry|null */
         public $user;
 
         /** @var string */
@@ -23,10 +23,10 @@
 
         /**
          * SessionDefinition constructor.
-         * @param IEntry $user
-         * @param string $ipAddress
+         * @param IEntry|null $user
+         * @param string      $ipAddress
          */
-        public function __construct(string $ipAddress, IEntry $user = null)
+        public function __construct(string $ipAddress, ?IEntry $user = null)
         {
             $this->user = $user;
             $this->ipAddress = $ipAddress;
