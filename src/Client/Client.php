@@ -183,6 +183,7 @@
          * @throws Unauthorized
          * @throws UnknownError
          * @throws \ErrorException
+         * @throws \Throwable
          */
         public function createActivity(ActivityDefinition $activityDefinition, MetadataList $metadata = null): Activity
         {
@@ -207,6 +208,11 @@
             switch ($curl->getHttpStatusCode()) {
                 case 200:
                     // ok
+
+                    if (isset($this->cache)) {
+                        $this->cache->notifyChange(new SessionKey($activityDefinition->session));
+                    }
+
                     return (new ActivityMapper($curl->response))->getObject();
                 case 403:
                     if (isset($curl->response->error)) {
@@ -370,7 +376,7 @@
                         foreach ($user->sessions as $session) {
                             $this->cache->add(UserKey::sessionKey($session), new UserKey($user),
                                 $this->cacheExpiration);
-                            $this->cache->createDependency(new SessionKey($session),new UserKey($user));
+                            $this->cache->createDependency(new SessionKey($session), new UserKey($user));
                         }
                     }
 
@@ -408,7 +414,7 @@
                 case 200:
                     // ok
 
-                    if(isset($this->cache)) {
+                    if (isset($this->cache)) {
                         $this->cache->notifyChange(new UserKey($user));
                     }
 
@@ -450,10 +456,10 @@
                 case 204:
                     // ok
 
-                    if(isset($this->cache)) {
+                    if (isset($this->cache)) {
                         $this->cache->notifyChange(new SessionKey($session));
                         $this->cache->notifyChange(new UserKey($user));
-                        $this->cache->createDependency(new SessionKey($session),new UserKey($user));
+                        $this->cache->createDependency(new SessionKey($session), new UserKey($user));
                     }
 
                     return true;
