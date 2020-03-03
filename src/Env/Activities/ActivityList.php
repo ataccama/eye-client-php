@@ -3,6 +3,7 @@
     namespace Ataccama\Eye\Client\Env\Activities;
 
     use Ataccama\Common\Env\BaseArray;
+    use Ataccama\Common\Env\IEntry;
     use Nette\SmartObject;
     use Nette\Utils\DateTime;
 
@@ -131,5 +132,22 @@
             }
 
             return $activityList;
+        }
+
+        /**
+         * @param IEntry $activityType
+         * @return ActivityList
+         */
+        public function listByType(IEntry $activityType): ActivityList
+        {
+            $activities = new ActivityList();
+
+            foreach ($this as $activity) {
+                if ($activity->type->id == $activityType->id) {
+                    $activities->add(clone $activity);
+                }
+            }
+
+            return $activities;
         }
     }
