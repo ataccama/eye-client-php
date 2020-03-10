@@ -7,6 +7,7 @@
     use Ataccama\Eye\Client\Env\Support\Type;
     use Ataccama\Eye\Client\Env\Products\AccessList;
     use Ataccama\Eye\Env\Sessions\MinifiedSessionList;
+    use Env\Tags\TagStats;
     use Nette\Utils\DateTime;
 
 
@@ -25,6 +26,9 @@
         /** @var Type */
         public $support;
 
+        /** @var TagStats */
+        public $tags;
+
         /**
          * User constructor.
          * @param int      $id
@@ -41,6 +45,7 @@
             $this->sessions = new MinifiedSessionList();
             $this->support = Type::none();
             $this->documentation = new AccessList();
+            $this->tags = new TagStats();
         }
 
         /**

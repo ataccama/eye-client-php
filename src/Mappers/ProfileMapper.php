@@ -10,6 +10,7 @@
     use Ataccama\Eye\Client\Env\Support\Type;
     use Ataccama\Eye\Client\Env\Users\Profile;
     use Ataccama\Eye\Client\Env\Users\User;
+    use Env\Tags\TagStat;
     use Nette\Utils\DateTime;
 
 
@@ -20,7 +21,7 @@
     class ProfileMapper extends Mapper
     {
         /**
-         * @return User
+         * @return Profile
          */
         public function getObject(): Profile
         {
@@ -51,6 +52,10 @@
             }
 
             $profile->support = $input->support == "None" ? Type::none() : Type::paid();
+
+            foreach ($input->tags as $tag) {
+                $profile->tags->add(new TagStat($tag->name, $tag->count));
+            }
 
             $output = $profile;
         }
