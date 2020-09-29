@@ -521,4 +521,44 @@
             }
             throw new UnknownError("Getting tags failed. Response: " . json_encode($curl->response));
         }
+
+        /**
+         * @param Env\Users\Filter $filter
+         * @return int
+         * @throws AtaccamaEyeApiError
+         * @throws Unauthorized
+         * @throws UnknownError
+         * @throws \ErrorException
+         */
+        public function getUserId(\Ataccama\Eye\Client\Env\Users\Filter $filter): int
+        {
+            $query = "";
+            if (isset($filter->session)) {
+                $query = "sessionId=" . $filter->session->id;
+            } elseif (isset($filter->keycloakId)) {
+                $query = "keycloakId=$filter->keycloakId";
+            } elseif (isset($filter->email)) {
+                $query = "email=$filter->email";
+            }
+
+            // API call
+            $curl = new Curl();
+            $curl->setHeader("Authorization", "Bearer $this->bearer");
+            $curl->get($this->getBaseUri() . "/user/id?$query");
+
+            switch ($curl->getHttpStatusCode()) {
+                case 200:
+                    // ok
+                    return $curl->response->id;
+                case 403:
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
+                    }
+                default:
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
+                    }
+            }
+            throw new UnknownError("Getting an user ID failed. Response: " . json_encode($curl->response));
+        }
     }
