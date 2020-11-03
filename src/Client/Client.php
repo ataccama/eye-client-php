@@ -25,7 +25,10 @@
     use Ataccama\Eye\Client\Exceptions\UnknownError;
     use Ataccama\Eye\Client\Mappers\ActivityMapper;
     use Ataccama\Eye\Client\Mappers\ProfileMapper;
+    use Ataccama\Eye\Env\Users\Consents\ConsentType;
+    use Ataccama\Eye\Env\Users\Consents\ConsentTypeList;
     use Curl\Curl;
+    use Env\CacheKeys\ConsentTypesKey;
     use Env\Tags\TagListKey;
     use Nette\Utils\DateTime;
 
@@ -560,5 +563,126 @@
                     }
             }
             throw new UnknownError("Getting an user ID failed. Response: " . json_encode($curl->response));
+        }
+
+        /**
+         * @param int $consentTypeId
+         * @param int $userId
+         * @return bool
+         * @throws AtaccamaEyeApiError
+         * @throws Unauthorized
+         * @throws \ErrorException
+         * @throws \Throwable
+         */
+        public function addConsentToUser(int $consentTypeId, int $userId): bool
+        {
+            // API call
+            $curl = new Curl();
+            $curl->setHeader("Authorization", "Bearer $this->bearer");
+            $curl->setHeader("Content-Type", "application/json");
+            $curl->post($this->getBaseUri() . "/consents", [
+                "consentTypeId" => $consentTypeId,
+                "userId"        => $userId
+            ]);
+
+            switch ($curl->getHttpStatusCode()) {
+                case 200:
+                    // ok
+                    if (isset($this->cache)) {
+                        $this->cache->notifyChange(new UserKey(new Entry($userId)));
+                    }
+
+                    return true;
+                case 403:
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
+                    }
+                default:
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
+                    }
+            }
+
+            return false;
+        }
+
+        /**
+         * @param int $consentTypeId
+         * @param int $userId
+         * @return bool
+         * @throws AtaccamaEyeApiError
+         * @throws Unauthorized
+         * @throws \ErrorException
+         * @throws \Throwable
+         */
+        public function removeConsentOffUser(int $consentTypeId, int $userId): bool
+        {
+            // API call
+            $curl = new Curl();
+            $curl->setHeader("Authorization", "Bearer $this->bearer");
+            $curl->setHeader("Content-Type", "application/json");
+            $curl->delete($this->getBaseUri() . "/consents", [], [
+                "consentTypeId" => $consentTypeId,
+                "userId"        => $userId
+            ]);
+
+            switch ($curl->getHttpStatusCode()) {
+                case 200:
+                    // ok
+                    if (isset($this->cache)) {
+                        $this->cache->notifyChange(new UserKey(new Entry($userId)));
+                    }
+
+                    return true;
+                case 403:
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
+                    }
+                default:
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
+                    }
+            }
+
+            return false;
+        }
+
+        public function listConsentTypes(): ConsentTypeList
+        {
+            if (isset($this->cache)) {
+                $consentTypes = $this->cache->get(new ConsentTypesKey());
+                if ($consentTypes !== null) {
+                    return $consentTypes;
+                }
+            }
+
+            // API call
+            $curl = new Curl();
+            $curl->setHeader("Authorization", "Bearer $this->bearer");
+            $curl->get($this->getBaseUri() . "/consents");
+
+            switch ($curl->getHttpStatusCode()) {
+                case 200:
+                    // ok
+                    $consentTypes = new ConsentTypeList();
+                    foreach ($curl->response as $consentType) {
+                        $consentTypes->add(new ConsentType((int) $consentType->id, (string) $consentType->name));
+                    }
+
+                    if (isset($this->cache)) {
+                        $this->cache->add(new ConsentTypesKey(), $consentTypes, $this->cacheExpiration);
+                    }
+
+                    return $consentTypes;
+                case 403:
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
+                    }
+                default:
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
+                    }
+            }
+            throw new UnknownError("Getting consent types failed. Response: " . json_encode($curl->response));
         }
     }
