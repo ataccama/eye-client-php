@@ -1,6 +1,4 @@
 <?php
-
-
     namespace Ataccama\Eye\Client\Mappers;
 
     use Ataccama\Common\Env\Email;
@@ -10,6 +8,8 @@
     use Ataccama\Eye\Client\Env\Support\Type;
     use Ataccama\Eye\Client\Env\Users\Profile;
     use Ataccama\Eye\Client\Env\Users\User;
+    use Ataccama\Eye\Env\Users\Consents\Consent;
+    use Ataccama\Eye\Env\Users\Consents\ConsentType;
     use Env\Tags\TagStat;
     use Nette\Utils\DateTime;
 
@@ -44,6 +44,13 @@
             if (isset($input->sessions)) {
                 foreach ($input->sessions as $session) {
                     $profile->sessions->add(new MinifiedSession($session->id, $session->ipAddress));
+                }
+            }
+
+            if (isset($input->consents)) {
+                foreach ($input->consents as $consent) {
+                    $profile->consents->add(new Consent(new ConsentType($consent->type->id, $consent->type->name),
+                        DateTime::from($consent->ts)));
                 }
             }
 

@@ -7,6 +7,7 @@
     use Ataccama\Eye\Client\Env\Support\Type;
     use Ataccama\Eye\Client\Env\Products\AccessList;
     use Ataccama\Eye\Env\Sessions\MinifiedSessionList;
+    use Ataccama\Eye\Env\Users\Consents\ConsentList;
     use Env\Tags\TagStats;
     use Nette\Utils\DateTime;
 
@@ -29,6 +30,9 @@
         /** @var TagStats */
         public $tags;
 
+        /** @var ConsentList */
+        public $consents;
+
         /**
          * User constructor.
          * @param int      $id
@@ -46,6 +50,7 @@
             $this->support = Type::none();
             $this->documentation = new AccessList();
             $this->tags = new TagStats();
+            $this->consents = new ConsentList();
         }
 
         /**
