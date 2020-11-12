@@ -536,12 +536,14 @@
         public function getUserId(\Ataccama\Eye\Client\Env\Users\Filter $filter): int
         {
             $query = "";
-            if (isset($filter->session)) {
-                $query = "sessionId=" . $filter->session->id;
+            if (isset($filter->id)) {
+                $query = "id=" . urlencode($filter->id);
+            } elseif (isset($filter->session)) {
+                $query = "sessionId=" . urlencode($filter->session->id);
             } elseif (isset($filter->keycloakId)) {
-                $query = "keycloakId=$filter->keycloakId";
+                $query = "keycloakId=" . urlencode($filter->keycloakId);
             } elseif (isset($filter->email)) {
-                $query = "email=$filter->email";
+                $query = "email=" . urlencode($filter->email);
             }
 
             // API call
