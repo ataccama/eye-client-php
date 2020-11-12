@@ -194,12 +194,19 @@
             $data = [
                 "sessionId" => $activityDefinition->session->id,
                 "ipAddress" => $activityDefinition->ipAddress,
-                "typeId"    => $activityDefinition->type->id
+                "typeId"    => $activityDefinition->type->id,
             ];
             if (isset($metadata)) {
                 foreach ($metadata as $pair) {
                     $data['metadata'][$pair->key] = $pair->value;
                 }
+            }
+            if (!empty($activityDefinition->tags)) {
+                $tagNames = [];
+                foreach ($activityDefinition->tags as $tag) {
+                    $tagNames[] = $tag->name;
+                }
+                $data["tags"] = $tagNames;
             }
 
             // API call
