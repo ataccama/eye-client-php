@@ -331,14 +331,14 @@
 
         /**
          * @param Env\Users\Filter $filter
-         * @return User
+         * @return User|null
          * @throws AtaccamaEyeApiError
          * @throws Unauthorized
          * @throws UnknownError
          * @throws \ErrorException
          * @throws \Throwable
          */
-        public function getUser(\Ataccama\Eye\Client\Env\Users\Filter $filter): User
+        public function getUser(\Ataccama\Eye\Client\Env\Users\Filter $filter): ?User
         {
             if (isset($this->cache)) {
                 if (empty($filter->id)) {
@@ -359,13 +359,13 @@
 
             $query = "";
             if (isset($filter->id)) {
-                $query = "id=$filter->id";
+                $query = "id=" . urlencode($filter->id);
             } elseif (isset($filter->session)) {
-                $query = "sessionId=" . $filter->session->id;
+                $query = "sessionId=" . urlencode($filter->session->id);
             } elseif (isset($filter->keycloakId)) {
-                $query = "keycloakId=$filter->keycloakId";
+                $query = "keycloakId=" . urlencode($filter->keycloakId);
             } elseif (isset($filter->email)) {
-                $query = "email=$filter->email";
+                $query = "email=" . urlencode($filter->email);
             }
 
             // API call
@@ -395,6 +395,8 @@
                     if (isset($curl->response->error)) {
                         throw new Unauthorized($curl->response->error);
                     }
+                case 404:
+                    return null;
                 default:
                     if (isset($curl->response->error)) {
                         throw new AtaccamaEyeApiError($curl->response->error);
