@@ -696,4 +696,57 @@
             }
             throw new UnknownError("Getting consent types failed. Response: " . json_encode($curl->response));
         }
+
+        public function createActivity_v3(
+            ActivityDefinition $activityDefinition,
+            MetadataList $metadata = null
+        ): Activity {
+            // data
+            $data = [
+                "sessionId" => $activityDefinition->session->id,
+                "ipAddress" => $activityDefinition->ipAddress,
+                "typeId"    => $activityDefinition->type->id,
+            ];
+            if (isset($metadata)) {
+                foreach ($metadata as $pair) {
+                    $data['metadata'][] = [
+                        "key"   => $pair->key,
+                        "value" => $pair->value
+                    ];
+                }
+            }
+            if (!empty($activityDefinition->tags)) {
+                $tagNames = [];
+                foreach ($activityDefinition->tags as $tag) {
+                    $tagNames[] = $tag->name;
+                }
+                $data["tags"] = $tagNames;
+            }
+
+            // API call
+            $curl = new Curl();
+            $curl->setHeader("Authorization", "Bearer $this->bearer");
+            $curl->setHeader("Content-Type", "application/json");
+            $curl->post($this->host . "/api/v3" . "/activities", $data);
+
+            switch ($curl->getHttpStatusCode()) {
+                case 200:
+                    // ok
+
+                    if (isset($this->cache)) {
+                        $this->cache->notifyChange(new SessionKey($activityDefinition->session));
+                    }
+
+                    return (new ActivityMapper($curl->response))->getObject();
+                case 403:
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
+                    }
+                default:
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
+                    }
+            }
+            throw new UnknownError("A creation a new activity failed. Response: " . json_encode($curl->response));
+        }
     }
