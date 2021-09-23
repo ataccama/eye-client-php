@@ -8,8 +8,10 @@
     use Ataccama\Eye\Client\Env\Activities\Activity;
     use Ataccama\Eye\Client\Env\Activities\ActivityDefinition;
     use Ataccama\Eye\Client\Env\Activities\ActivityList;
+    use Ataccama\Eye\Client\Env\Activities\ActivityTypeList;
     use Ataccama\Eye\Client\Env\Activities\Filter;
     use Ataccama\Eye\Client\Env\Activities\MetadataList;
+    use Ataccama\Eye\Client\Env\Activities\Type;
     use Ataccama\Eye\Client\Env\CacheKeys\ActivityListKey;
     use Ataccama\Eye\Client\Env\CacheKeys\SessionKey;
     use Ataccama\Eye\Client\Env\CacheKeys\UserFilterKey;
@@ -295,6 +297,33 @@
                     }
             }
             throw new UnknownError("Getting activities failed. Response: " . json_encode($curl->response));
+        }
+
+        public function listActivityTypes(): ActivityTypeList
+        {
+            // API call
+            $curl = new Curl();
+            $curl->setHeader("Authorization", "Bearer $this->bearer");
+            $curl->get($this->getBaseUri() . "/activities/types");
+
+            switch ($curl->getHttpStatusCode()) {
+                case 200:
+                    $types = new ActivityTypeList();
+                    foreach ($curl->response as $type) {
+                        $types->add(new Type($type->id, $type->name));
+                    }
+
+                    return $types;
+                case 403:
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
+                    }
+                default:
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
+                    }
+            }
+            throw new UnknownError("Getting activity types failed. Response: " . json_encode($curl->response));
         }
 
         /**
