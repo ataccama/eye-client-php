@@ -30,6 +30,9 @@
         /** @var string */
         public $ipAddress;
 
+        /** @var string|null */
+        public $office;
+
         /**
          * UserDefinition constructor.
          * @param Name   $name
@@ -60,7 +63,8 @@
                 "keycloakId",
                 "emailUpdates",
                 "acceptedTerms",
-                "industry"
+                "industry",
+                "office"
             ];
 
             foreach ($optionalFields as $field) {

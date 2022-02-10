@@ -31,6 +31,7 @@
     use Ataccama\Eye\Env\Users\Consents\ConsentTypeList;
     use Curl\Curl;
     use Env\CacheKeys\ConsentTypesKey;
+    use Ataccama\Eye\Client\Env\LookUp\IpAddressDetail;
     use Env\Tags\TagListKey;
     use Nette\Utils\DateTime;
 
@@ -777,5 +778,28 @@
                     }
             }
             throw new UnknownError("A creation a new activity failed. Response: " . json_encode($curl->response));
+        }
+
+        /**
+         * @param string $ipAddress
+         * @return IpAddressDetail|null
+         */
+        public function locateIpAddress(string $ipAddress): ?IpAddressDetail
+        {
+            // API call
+            $curl = new Curl();
+            $curl->setHeader("Authorization", "Bearer $this->bearer");
+            $curl->get($this->host . "/api/v1/ipi?ipAddress=$ipAddress", []);
+
+            if ($curl->httpStatusCode == 200) {
+                if (!empty($curl->response->data)) {
+                    $data = $curl->response->data;
+
+                    return new IpAddressDetail($data->country_code ?? null, $data->country ?? null,
+                        $data->city ?? null);
+                }
+            }
+
+            return null;
         }
     }
