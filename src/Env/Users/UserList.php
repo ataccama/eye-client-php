@@ -20,9 +20,9 @@
         }
 
         /**
-         * @return User
+         * @return User|null
          */
-        public function current(): User
+        public function current(): ?User
         {
             return parent::current();
         }

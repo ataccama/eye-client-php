@@ -28,9 +28,9 @@
         }
 
         /**
-         * @return ActivityList
+         * @return ActivityList|null
          */
-        public function current(): ActivityList
+        public function current(): ?ActivityList
         {
             return parent::current();
         }

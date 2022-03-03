@@ -20,9 +20,9 @@
         }
 
         /**
-         * @return Type
+         * @return Type|null
          */
-        public function current(): Type
+        public function current(): ?Type
         {
             return parent::current();
         }

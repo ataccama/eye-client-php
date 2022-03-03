@@ -31,9 +31,9 @@
         }
 
         /**
-         * @return Activity
+         * @return Activity|null
          */
-        public function current()
+        public function current(): ?Activity
         {
             return parent::current();
         }

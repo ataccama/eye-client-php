@@ -20,9 +20,9 @@
         }
 
         /**
-         * @return Metadata
+         * @return Metadata|null
          */
-        public function current()
+        public function current(): ?Metadata
         {
             return parent::current();
         }
@@ -41,7 +41,7 @@
          * @param string $key
          * @return Metadata|null
          */
-        public function findKey(string $key)
+        public function findKey(string $key): ?Metadata
         {
             foreach ($this as $metadata) {
                 if ($metadata->getKey() == $key) {
