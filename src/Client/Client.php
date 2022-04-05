@@ -16,6 +16,7 @@
     use Ataccama\Eye\Client\Env\CacheKeys\SessionKey;
     use Ataccama\Eye\Client\Env\CacheKeys\UserFilterKey;
     use Ataccama\Eye\Client\Env\CacheKeys\UserKey;
+    use Ataccama\Eye\Client\Env\LookUp\IpAddressDetail;
     use Ataccama\Eye\Client\Env\Sessions\Session;
     use Ataccama\Eye\Client\Env\Sessions\SessionDefinition;
     use Ataccama\Eye\Client\Env\Tags\Tag;
@@ -31,7 +32,6 @@
     use Ataccama\Eye\Env\Users\Consents\ConsentTypeList;
     use Curl\Curl;
     use Env\CacheKeys\ConsentTypesKey;
-    use Ataccama\Eye\Client\Env\LookUp\IpAddressDetail;
     use Env\Tags\TagListKey;
     use Nette\Utils\DateTime;
 
@@ -801,5 +801,55 @@
             }
 
             return null;
+        }
+
+        public function createActivity_v4(
+            ActivityDefinition $activityDefinition,
+            MetadataList $metadata = null
+        ): bool {
+            // data
+            $data = [
+                "sessionId" => $activityDefinition->session->id,
+                "ipAddress" => $activityDefinition->ipAddress,
+                "typeId"    => $activityDefinition->type->id,
+            ];
+            if (isset($metadata)) {
+                foreach ($metadata as $pair) {
+                    $data['metadata'][$pair->key] = $pair->value;
+                }
+            }
+            if (!empty($activityDefinition->tags)) {
+                $tagNames = [];
+                foreach ($activityDefinition->tags as $tag) {
+                    $tagNames[] = $tag->name;
+                }
+                $data["tags"] = $tagNames;
+            }
+
+            // API call
+            $curl = new Curl();
+            $curl->setHeader("Authorization", "Bearer $this->bearer");
+            $curl->setHeader("Content-Type", "application/json");
+            $curl->post($this->host . "/api/v4/activities", $data);
+
+            switch ($curl->getHttpStatusCode()) {
+                case 204:
+                    // ok
+
+                    if (isset($this->cache)) {
+                        $this->cache->notifyChange(new SessionKey($activityDefinition->session));
+                    }
+
+                    return true;
+                case 403:
+                    if (isset($curl->response->error)) {
+                        throw new Unauthorized($curl->response->error);
+                    }
+                default:
+                    if (isset($curl->response->error)) {
+                        throw new AtaccamaEyeApiError($curl->response->error);
+                    }
+            }
+            throw new UnknownError("A creation a new activity failed. Response: " . json_encode($curl->response));
         }
     }
