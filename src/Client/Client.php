@@ -805,7 +805,8 @@
 
         public function createActivity_v4(
             ActivityDefinition $activityDefinition,
-            MetadataList $metadata = null
+            MetadataList $metadata = null,
+            bool $multipleMetadataKeys = false
         ): bool {
             // data
             $data = [
@@ -814,8 +815,14 @@
                 "typeId"    => $activityDefinition->type->id,
             ];
             if (isset($metadata)) {
-                foreach ($metadata as $pair) {
-                    $data['metadata'][$pair->key] = $pair->value;
+                if ($multipleMetadataKeys) {
+                    foreach ($metadata as $pair) {
+                        $data['metadata'][] = ['key' => $pair->key, 'value' => $pair->value];
+                    }
+                } else {
+                    foreach ($metadata as $pair) {
+                        $data['metadata'][$pair->key] = $pair->value;
+                    }
                 }
             }
             if (!empty($activityDefinition->tags)) {
@@ -830,7 +837,11 @@
             $curl = new Curl();
             $curl->setHeader("Authorization", "Bearer $this->bearer");
             $curl->setHeader("Content-Type", "application/json");
-            $curl->post($this->host . "/api/v4/activities", $data);
+            if ($multipleMetadataKeys) {
+                $curl->put($this->host . "/api/v4/activities", $data);
+            } else {
+                $curl->post($this->host . "/api/v4/activities", $data);
+            }
 
             switch ($curl->getHttpStatusCode()) {
                 case 204:
