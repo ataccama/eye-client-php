@@ -33,11 +33,20 @@
         /** @var string|null */
         public $office;
 
+        /** @var string|null */
+        public $jobTitle;
+
+        /** @var string|null */
+        public $city;
+
+        /** @var string|null */
+        public $phone;
+
         /**
          * UserDefinition constructor.
          * @param Name   $name
          * @param Email  $email
-         * @param string $ipAddress
+         * @param string|null $ipAddress
          */
         public function __construct(Name $name, Email $email, string $ipAddress = null)
         {
