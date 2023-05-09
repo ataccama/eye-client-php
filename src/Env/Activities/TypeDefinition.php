@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
 
@@ -9,8 +10,7 @@
      */
     class TypeDefinition
     {
-        /** @var string */
-        public $name;
+        public string $name;
 
         /**
          * ActivityTypeDefinition constructor.

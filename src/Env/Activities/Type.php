@@ -1,20 +1,21 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
 
-    use Ataccama\Common\Env\BaseEntry;
     use Ataccama\Common\Env\IArray;
-    use Ataccama\Common\Env\IEntry;
     use Ataccama\Common\Env\IPair;
+    use Ataccama\Common\Interfaces\IdentifiableByInteger;
 
 
     /**
      * Class ActivityType
      * @package Ataccama\Eye\Env\Activities
+     * @property-read int $id
      */
-    class Type extends TypeDefinition implements IEntry, IPair, IArray
+    class Type extends TypeDefinition implements IdentifiableByInteger, IPair, IArray
     {
-        use BaseEntry;
+        public readonly int $id;
 
         /**
          * ActivityType constructor.
@@ -27,12 +28,12 @@
             $this->id = $id;
         }
 
-        public function getKey()
+        public function getKey(): int
         {
             return $this->id;
         }
 
-        public function getValue()
+        public function getValue(): string
         {
             return $this->name;
         }
@@ -43,5 +44,10 @@
                 "id"   => $this->id,
                 "name" => $this->name
             ];
+        }
+
+        public function getId(): int
+        {
+            return $this->id;
         }
     }

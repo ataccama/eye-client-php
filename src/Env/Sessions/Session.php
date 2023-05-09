@@ -1,10 +1,11 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Sessions;
 
-    use Ataccama\Common\Env\BaseEntry;
     use Ataccama\Common\Env\IArray;
-    use Ataccama\Common\Env\IEntry;
+    use Ataccama\Common\Interfaces\IdentifiableByInteger;
+    use Ataccama\Common\Interfaces\IdentifiableByString;
     use Ataccama\Eye\Client\Env\Activities\ActivityList;
     use Nette\Utils\DateTime;
 
@@ -13,31 +14,28 @@
      * Class Session
      * @package Ataccama\Eye\Env\Activities
      * @property-read DateTime $dtCreated
+     * @property-read string   $id
      */
-    class Session extends SessionDefinition implements IEntry, IArray
+    class Session extends SessionDefinition implements IdentifiableByString, IArray
     {
-        use BaseEntry;
-
-        /** @var DateTime */
-        protected $dtCreated;
-
-        /** @var ActivityList */
-        public $activities;
+        public readonly string $id;
+        public readonly DateTime $dtCreated;
+        public ActivityList $activities;
 
         /**
          * Session constructor.
-         * @param string      $id
-         * @param DateTime    $dtCreated
-         * @param DateTime    $dtExpired
-         * @param string      $ipAddress
-         * @param IEntry|null $user
+         * @param string                     $id
+         * @param DateTime                   $dtCreated
+         * @param DateTime                   $dtExpired
+         * @param string                     $ipAddress
+         * @param IdentifiableByInteger|null $user
          */
         public function __construct(
             string $id,
             DateTime $dtCreated,
             DateTime $dtExpired,
             string $ipAddress,
-            IEntry $user = null
+            IdentifiableByInteger $user = null
         ) {
             parent::__construct($ipAddress, $user);
             $this->dtCreated = $dtCreated;
@@ -62,5 +60,10 @@
                 "dtCreated"  => $this->dtCreated->getTimestamp(),
                 "activities" => $this->activities->toApiArray()
             ];
+        }
+
+        public function getId(): string
+        {
+            return $this->id;
         }
     }

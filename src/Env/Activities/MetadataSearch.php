@@ -1,9 +1,7 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
-
-    use Nette\SmartObject;
-
 
     /**
      * Class MetadataSearch
@@ -13,13 +11,8 @@
      */
     class MetadataSearch
     {
-        use SmartObject;
-
-        /** @var string */
-        private $value;
-
-        /** @var string|null */
-        private $key;
+        public readonly string $value;
+        public readonly ?string $key;
 
         /**
          * MetadataSearch constructor.

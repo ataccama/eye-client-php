@@ -1,8 +1,10 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Sessions;
 
     use Ataccama\Common\Env\IEntry;
+    use Ataccama\Common\Interfaces\IdentifiableByInteger;
     use Nette\Utils\DateTime;
 
 
@@ -12,21 +14,16 @@
      */
     class SessionDefinition
     {
-        /** @var IEntry|null */
-        public $user;
-
-        /** @var string */
-        public $ipAddress;
-
-        /** @var DateTime */
-        public $dtExpired;
+        public ?IdentifiableByInteger $user;
+        public string $ipAddress;
+        public DateTime $dtExpired;
 
         /**
          * SessionDefinition constructor.
-         * @param IEntry|null $user
-         * @param string      $ipAddress
+         * @param IdentifiableByInteger|null $user
+         * @param string                     $ipAddress
          */
-        public function __construct(string $ipAddress, ?IEntry $user = null)
+        public function __construct(string $ipAddress, ?IdentifiableByInteger $user = null)
         {
             $this->user = $user;
             $this->ipAddress = $ipAddress;

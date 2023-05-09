@@ -1,9 +1,10 @@
 <?php
-
+declare(strict_types=1);
     namespace Ataccama\Eye\Client;
 
-    use Ataccama\Common\Env\Entry;
-    use Ataccama\Common\Env\IEntry;
+    use Ataccama\Common\Env\Prototypes\IntegerId;
+    use Ataccama\Common\Interfaces\IdentifiableByInteger;
+    use Ataccama\Common\Interfaces\IdentifiableByString;
     use Ataccama\Common\Utils\Cache\DataStorage;
     use Ataccama\Eye\Client\Env\Activities\Activity;
     use Ataccama\Eye\Client\Env\Activities\ActivityDefinition;
@@ -42,20 +43,11 @@
      */
     class Client
     {
-        /** @var string */
-        private $host;
-
-        /** @var string */
-        private $bearer;
-
-        /** @var int */
-        private $version;
-
-        /** @var DataStorage */
-        private $cache;
-
-        /** @var string */
-        private $cacheExpiration;
+        private string $host;
+        private string $bearer;
+        private int $version;
+        private ?DataStorage $cache =null;
+        private string $cacheExpiration;
 
         /**
          * Client constructor.
@@ -131,7 +123,7 @@
         }
 
         /**
-         * @param IEntry $session
+         * @param IdentifiableByString $session
          * @return Session
          * @throws AtaccamaEyeApiError
          * @throws Unauthorized
@@ -139,10 +131,10 @@
          * @throws \ErrorException
          * @throws \Throwable
          */
-        public function getSession(IEntry $session): Session
+        public function getSession(IdentifiableByString $session): Session
         {
             if (isset($this->cache)) {
-                $_session = $this->cache->get(new SessionKey($session));
+                $_session = $this->cache->get(new SessionKey($session->getId()));
                 if ($_session !== null) {
                     return $_session;
                 }
@@ -158,14 +150,14 @@
                     // ok
                     $session = new Session($curl->response->id, DateTime::from($curl->response->dtCreated),
                         DateTime::from($curl->response->dtExpired), $curl->response->ipAddress,
-                        !empty($curl->response->userId) ? new Entry($curl->response->userId) : null);
+                        !empty($curl->response->userId) ? new IntegerId($curl->response->userId) : null);
 
                     foreach ($curl->response->activities as $activity) {
                         $session->activities->add((new ActivityMapper($activity))->getObject());
                     }
 
                     if (isset($this->cache)) {
-                        $this->cache->add(new SessionKey($session), $session, $this->cacheExpiration);
+                        $this->cache->add(new SessionKey($session->getId()), $session, $this->cacheExpiration);
                     }
 
                     return $session;
@@ -190,6 +182,8 @@
          * @throws UnknownError
          * @throws \ErrorException
          * @throws \Throwable
+         *
+         * @deprecated Use V4 for fastest call without response, or V3 for callback data
          */
         public function createActivity(ActivityDefinition $activityDefinition, MetadataList $metadata = null): Activity
         {
@@ -223,7 +217,7 @@
                     // ok
 
                     if (isset($this->cache)) {
-                        $this->cache->notifyChange(new SessionKey($activityDefinition->session));
+                        $this->cache->notifyChange(new SessionKey($activityDefinition->session->getId()));
                     }
 
                     return (new ActivityMapper($curl->response))->getObject();
@@ -380,7 +374,7 @@
                         }
                     }
                 } else {
-                    $user = $this->cache->get(new UserKey(new Entry($filter->id)));
+                    $user = $this->cache->get(new UserKey($filter->id));
                     if ($user !== null) {
                         return $user;
                     }
@@ -395,7 +389,7 @@
             } elseif (isset($filter->keycloakId)) {
                 $query = "keycloakId=" . urlencode($filter->keycloakId);
             } elseif (isset($filter->email)) {
-                $query = "email=" . urlencode($filter->email);
+                $query = "email=" . urlencode($filter->email->definition);
             }
 
             // API call
@@ -408,15 +402,15 @@
                     // ok
                     $user = (new ProfileMapper($curl->response))->getObject();
                     if (isset($this->cache)) {
-                        $this->cache->add(new UserKey($user), $user, $this->cacheExpiration);
-                        $this->cache->add(UserKey::emailKey($user), new UserKey($user), $this->cacheExpiration);
+                        $this->cache->add(new UserKey($user->id), $user, $this->cacheExpiration);
+                        $this->cache->add(UserKey::emailKey($user), new UserKey($user->id), $this->cacheExpiration);
                         if (!empty($user->keycloakId)) {
-                            $this->cache->add(UserKey::keycloakKey($user), new UserKey($user), $this->cacheExpiration);
+                            $this->cache->add(UserKey::keycloakKey($user), new UserKey($user->id), $this->cacheExpiration);
                         }
                         foreach ($user->sessions as $session) {
-                            $this->cache->add(UserKey::sessionKey($session), new UserKey($user),
+                            $this->cache->add(UserKey::sessionKey($session), new UserKey($user->id),
                                 $this->cacheExpiration);
-                            $this->cache->createDependency(new SessionKey($session), new UserKey($user));
+                            $this->cache->createDependency(new SessionKey($session->id), new UserKey($user->id));
                         }
                     }
 
@@ -457,7 +451,7 @@
                     // ok
 
                     if (isset($this->cache)) {
-                        $this->cache->notifyChange(new UserKey($user));
+                        $this->cache->notifyChange(new UserKey($user->id));
                     }
 
                     return (new ProfileMapper($curl->response))->getObject();
@@ -474,8 +468,8 @@
         }
 
         /**
-         * @param IEntry $session
-         * @param IEntry $user
+         * @param IdentifiableByString $session
+         * @param IdentifiableByInteger $user
          * @return bool
          * @throws AtaccamaEyeApiError
          * @throws Unauthorized
@@ -483,7 +477,7 @@
          * @throws \ErrorException
          * @throws \Throwable
          */
-        public function identifySession(IEntry $session, IEntry $user): bool
+        public function identifySession(IdentifiableByString $session, IdentifiableByInteger $user): bool
         {
             // API call
             $curl = new Curl();
@@ -499,9 +493,9 @@
                     // ok
 
                     if (isset($this->cache)) {
-                        $this->cache->notifyChange(new SessionKey($session));
-                        $this->cache->notifyChange(new UserKey($user));
-                        $this->cache->createDependency(new SessionKey($session), new UserKey($user));
+                        $this->cache->notifyChange(new SessionKey($session->getId()));
+                        $this->cache->notifyChange(new UserKey($user->getId()));
+                        $this->cache->createDependency(new SessionKey($session->getId()), new UserKey($user->getId()));
                     }
 
                     return true;
@@ -582,7 +576,7 @@
             } elseif (isset($filter->keycloakId)) {
                 $query = "keycloakId=" . urlencode($filter->keycloakId);
             } elseif (isset($filter->email)) {
-                $query = "email=" . urlencode($filter->email);
+                $query = "email=" . urlencode($filter->email->definition);
             }
 
             // API call
@@ -630,7 +624,7 @@
                 case 200:
                     // ok
                     if (isset($this->cache)) {
-                        $this->cache->notifyChange(new UserKey(new Entry($userId)));
+                        $this->cache->notifyChange(new UserKey($userId));
                     }
 
                     return true;
@@ -671,7 +665,7 @@
                 case 200:
                     // ok
                     if (isset($this->cache)) {
-                        $this->cache->notifyChange(new UserKey(new Entry($userId)));
+                        $this->cache->notifyChange(new UserKey($userId));
                     }
 
                     return true;
@@ -764,7 +758,7 @@
                     // ok
 
                     if (isset($this->cache)) {
-                        $this->cache->notifyChange(new SessionKey($activityDefinition->session));
+                        $this->cache->notifyChange(new SessionKey($activityDefinition->session->getId()));
                     }
 
                     return (new ActivityMapper($curl->response))->getObject();
@@ -848,7 +842,7 @@
                     // ok
 
                     if (isset($this->cache)) {
-                        $this->cache->notifyChange(new SessionKey($activityDefinition->session));
+                        $this->cache->notifyChange(new SessionKey($activityDefinition->session->getId()));
                     }
 
                     return true;

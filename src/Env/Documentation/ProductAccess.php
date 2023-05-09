@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Products;
 
@@ -14,8 +15,8 @@
     {
         use SmartObject;
 
-        /** @var string */
-        protected $name;
+
+        public readonly string $name;
 
         /**
          * Product constructor.

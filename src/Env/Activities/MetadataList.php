@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
 
@@ -14,9 +15,11 @@
         /**
          * @param Metadata $metadata
          */
-        public function add($metadata)
+        public function add($metadata): self
         {
             parent::add($metadata);
+
+            return $this;
         }
 
         /**

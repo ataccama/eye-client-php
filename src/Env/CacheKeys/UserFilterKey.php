@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\CacheKeys;
 
@@ -10,10 +11,9 @@
      * Class UserFilterKey
      * @package Ataccama\Eye\Client\Env\CacheKeys
      */
-    class UserFilterKey implements IKey
+    readonly class UserFilterKey implements IKey
     {
-        /** @var string */
-        private $id;
+        public string $id;
 
         const PREFIX = "eye_api_user_filter";
 
@@ -32,7 +32,7 @@
             }
         }
 
-        public function getId()
+        public function getId(): string
         {
             return $this->id;
         }

@@ -1,10 +1,10 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\CacheKeys;
 
-    use Ataccama\Common\Env\IEntry;
     use Ataccama\Common\Exceptions\NotDefined;
-    use Ataccama\Common\Utils\Cache\EntryKey;
+    use Ataccama\Common\Interfaces\IdentifiableByString;
     use Ataccama\Common\Utils\Cache\IKey;
     use Ataccama\Common\Utils\Cache\Key;
     use Ataccama\Eye\Client\Env\Users\User;
@@ -14,8 +14,18 @@
      * Class UserKey
      * @package Ataccama\Eye\Client\Env\CacheKeys
      */
-    class UserKey extends EntryKey
+    readonly class UserKey implements IKey
     {
+        public int $id;
+
+        /**
+         * @param int $id
+         */
+        public function __construct(int $id)
+        {
+            $this->id = $id;
+        }
+
         public function getPrefix(): ?string
         {
             return "eye_api_user";
@@ -36,10 +46,10 @@
         }
 
         /**
-         * @param IEntry $session
+         * @param IdentifiableByString $session
          * @return IKey
          */
-        public static function sessionKey(IEntry $session): IKey
+        public static function sessionKey(IdentifiableByString $session): IKey
         {
             return new Key($session->id, UserFilterKey::PREFIX);
         }
@@ -50,6 +60,11 @@
          */
         public static function emailKey(User $user): IKey
         {
-            return new Key($user->email, UserFilterKey::PREFIX);
+            return new Key($user->email->definition, UserFilterKey::PREFIX);
+        }
+
+        public function getId(): string
+        {
+            return $this->id;
         }
     }

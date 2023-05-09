@@ -1,9 +1,10 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
 
     use Ataccama\Common\Env\BaseArray;
-    use Ataccama\Common\Env\IEntry;
+    use Ataccama\Common\Interfaces\IdentifiableByInteger;
     use Nette\SmartObject;
     use Nette\Utils\DateTime;
 
@@ -19,11 +20,12 @@
     {
         use SmartObject;
 
+
         /**
          * @param Activity $activity
          * @return ActivityList
          */
-        public function add($activity)
+        public function add($activity): self
         {
             parent::add($activity);
 
@@ -135,10 +137,10 @@
         }
 
         /**
-         * @param IEntry $activityType
+         * @param IdentifiableByInteger $activityType
          * @return ActivityList
          */
-        public function listByType(IEntry $activityType): ActivityList
+        public function listByType(IdentifiableByInteger $activityType): ActivityList
         {
             $activities = new ActivityList();
 

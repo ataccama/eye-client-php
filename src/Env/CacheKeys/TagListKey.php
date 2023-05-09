@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Env\Tags;
 
@@ -9,10 +10,9 @@
      * Class TagListKey
      * @package Env\Tags
      */
-    final class TagListKey implements IKey
+    readonly final class TagListKey implements IKey
     {
-        /** @var string */
-        private $id;
+        public string $id;
 
         /**
          * ActivityListKey constructor.
@@ -22,7 +22,7 @@
             $this->id = "all";
         }
 
-        public function getId()
+        public function getId(): string
         {
             return $this->id;
         }

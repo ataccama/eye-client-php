@@ -17,11 +17,9 @@
     {
         use SmartObject;
 
-        /** @var DateTime */
-        protected $date;
 
-        /** @var ConsentType */
-        protected $type;
+        public readonly DateTime $date;
+        public readonly ConsentType $type;
 
         /**
          * GivenConsent constructor.

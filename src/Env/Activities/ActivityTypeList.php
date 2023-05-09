@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
 
@@ -14,9 +15,11 @@
         /**
          * @param Type $type
          */
-        public function add($type): void
+        public function add($type): self
         {
             $this->items[$type->getKey()] = $type->getValue();
+
+            return $this;
         }
 
         /**
@@ -26,5 +29,4 @@
         {
             return parent::current();
         }
-
     }

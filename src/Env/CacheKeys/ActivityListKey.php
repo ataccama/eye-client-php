@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\CacheKeys;
 
@@ -10,10 +11,9 @@
      * Class ActivityListKey
      * @package Ataccama\Eye\Client\Env\CacheKeys
      */
-    class ActivityListKey implements IKey
+    readonly class ActivityListKey implements IKey
     {
-        /** @var string */
-        private $id;
+        public string $id;
 
         /**
          * ActivityListKey constructor.
@@ -24,7 +24,7 @@
             $this->id = "$filter";
         }
 
-        public function getId()
+        public function getId(): string
         {
             return $this->id;
         }

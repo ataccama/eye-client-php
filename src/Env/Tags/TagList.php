@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Tags;
 
@@ -15,9 +16,11 @@
         /**
          * @param Tag $tag
          */
-        public function add($tag)
+        public function add($tag): self
         {
             $this->items[$tag->id] = $tag;
+
+            return $this;
         }
 
         /**

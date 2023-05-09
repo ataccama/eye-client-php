@@ -16,7 +16,7 @@
          * @param Consent $consent
          * @return ConsentList
          */
-        public function add($consent)
+        public function add($consent): self
         {
             $this->items[$consent->type->id] = $consent;
 
@@ -24,9 +24,9 @@
         }
 
         /**
-         * @return Consent
+         * @return Consent|null
          */
-        public function current(): Consent
+        public function current(): ?Consent
         {
             return parent::current();
         }

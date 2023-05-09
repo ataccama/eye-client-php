@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Env\Tags;
 
@@ -14,17 +15,17 @@
     {
         /**
          * @param TagStat $tagStat
-         * @return BaseArray
+         * @return TagStats
          */
-        public function add($tagStat)
+        public function add($tagStat): self
         {
             return parent::add($tagStat);
         }
 
         /**
-         * @return TagStat
+         * @return TagStat|null
          */
-        public function current(): TagStat
+        public function current(): ?TagStat
         {
             return parent::current();
         }

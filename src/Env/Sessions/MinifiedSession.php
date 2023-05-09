@@ -1,10 +1,10 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Sessions;
 
-    use Ataccama\Common\Env\BaseEntry;
-    use Ataccama\Common\Env\IEntry;
     use Ataccama\Common\Env\Person;
+    use Ataccama\Common\Interfaces\IdentifiableByString;
 
 
     /**
@@ -13,12 +13,10 @@
      * @property-read Person|null $user
      * @property-read string      $ipAddress
      */
-    class MinifiedSession implements IEntry
+    class MinifiedSession implements IdentifiableByString
     {
-        use BaseEntry;
-
-        /** @var string */
-        protected $ipAddress;
+        public readonly string $id;
+        protected string $ipAddress;
 
         /**
          * MinifiedSession constructor.
@@ -37,5 +35,10 @@
         public function getIpAddress(): string
         {
             return $this->ipAddress;
+        }
+
+        public function getId(): string
+        {
+            return $this->id;
         }
     }
