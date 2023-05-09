@@ -17,16 +17,21 @@
         /** @var string|null */
         public $city;
 
+        /** @var string|null */
+        public $timeZone;
+
         /**
          * IpAddressDetail constructor.
          * @param string|null $countryCode
          * @param string|null $countryName
          * @param string|null $city
+         * @param string|null $timeZone
          */
-        public function __construct(?string $countryCode, ?string $countryName, ?string $city)
+        public function __construct(?string $countryCode, ?string $countryName, ?string $city, ?string $timeZone)
         {
             $this->countryCode = $countryCode;
             $this->countryName = $countryName;
             $this->city = $city;
+            $this->timeZone = $timeZone;
         }
     }

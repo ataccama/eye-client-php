@@ -796,7 +796,7 @@
                     $data = $curl->response->data;
 
                     return new IpAddressDetail($data->country_code ?? null, $data->country ?? null,
-                        $data->city ?? null);
+                        $data->city ?? null, $data->time_zone);
                 }
             }
 
