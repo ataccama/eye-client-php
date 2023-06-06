@@ -1,5 +1,6 @@
 <?php
-declare(strict_types=1);
+    declare(strict_types=1);
+
     namespace Ataccama\Eye\Client;
 
     use Ataccama\Common\Env\Prototypes\IntegerId;
@@ -46,7 +47,7 @@ declare(strict_types=1);
         private string $host;
         private string $bearer;
         private int $version;
-        private ?DataStorage $cache =null;
+        private ?DataStorage $cache = null;
         private string $cacheExpiration;
 
         /**
@@ -383,7 +384,7 @@ declare(strict_types=1);
 
             $query = "";
             if (isset($filter->id)) {
-                $query = "id=" . urlencode($filter->id);
+                $query = "id=" . urlencode((string) $filter->id);
             } elseif (isset($filter->session)) {
                 $query = "sessionId=" . urlencode($filter->session->id);
             } elseif (isset($filter->keycloakId)) {
@@ -405,7 +406,8 @@ declare(strict_types=1);
                         $this->cache->add(new UserKey($user->id), $user, $this->cacheExpiration);
                         $this->cache->add(UserKey::emailKey($user), new UserKey($user->id), $this->cacheExpiration);
                         if (!empty($user->keycloakId)) {
-                            $this->cache->add(UserKey::keycloakKey($user), new UserKey($user->id), $this->cacheExpiration);
+                            $this->cache->add(UserKey::keycloakKey($user), new UserKey($user->id),
+                                $this->cacheExpiration);
                         }
                         foreach ($user->sessions as $session) {
                             $this->cache->add(UserKey::sessionKey($session), new UserKey($user->id),
@@ -468,7 +470,7 @@ declare(strict_types=1);
         }
 
         /**
-         * @param IdentifiableByString $session
+         * @param IdentifiableByString  $session
          * @param IdentifiableByInteger $user
          * @return bool
          * @throws AtaccamaEyeApiError

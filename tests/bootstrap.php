@@ -6,16 +6,31 @@
 
     // type into terminal to start: vendor/bin/tester tests/
 
-    const HOST = "https://eye.ataccama.com";
-    const BEARER = "MihtfkPj5s8lrDmZgu8AulZjKaRkkm2I";
     const IP_ADDRESS = "localhost";
 
     const TEMP_DIR = __DIR__ . "/../tmp";
     const TEMP_SESSION = TEMP_DIR . "/session";
+    const TEMP_USER = TEMP_DIR . "/user.json";
 
     if (!file_exists(TEMP_DIR)) {
         mkdir(TEMP_DIR);
     }
+
+    $configPath = __DIR__ . "/../tmp/config.json";
+
+    if (!file_exists($configPath)) {
+        file_put_contents($configPath, json_encode([
+            "host"         => "",
+            "bearer"       => "",
+            "exampleEmail" => "",
+        ]));
+    }
+
+    $config = json_decode(file_get_contents($configPath));
+
+    define("HOST", (string) $config->host);
+    define("BEARER", (string) $config->bearer);
+    define("EXAMPLE_EMAIL", (string) $config->exampleEmail);
 
     if (!file_exists(TEMP_SESSION)) {
         $client = new Ataccama\Eye\Client\Client(HOST, BEARER);
