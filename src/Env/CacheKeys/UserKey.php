@@ -16,14 +16,14 @@
      */
     readonly class UserKey implements IKey
     {
-        public int $id;
+        public string $id;
 
         /**
          * @param int $id
          */
         public function __construct(int $id)
         {
-            $this->id = $id;
+            $this->id = (string) $id;
         }
 
         public function getPrefix(): ?string

@@ -24,7 +24,7 @@
         public function __construct(Filter $filter)
         {
             if (!empty($filter->email)) {
-                $this->id = $filter->email;
+                $this->id = $filter->email->definition;
             } elseif (!empty($filter->session)) {
                 $this->id = $filter->session->id;
             } elseif (!empty($filter->keycloakId)) {

@@ -2,7 +2,7 @@
   "name": "ataccama/eye-client-php",
   "license": "MIT",
   "description": "PHP Client for Ataccama Eye API.",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "type": "library",
   "require": {
     "php": ">= 8.2.0",
