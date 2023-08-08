@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Mappers;
 
@@ -8,8 +9,7 @@
      */
     abstract class Mapper
     {
-        /** @var mixed */
-        private $result;
+        private mixed $result;
 
         /**
          * Mapper constructor.
@@ -20,9 +20,9 @@
             $this->map($response, $this->result);
         }
 
-        abstract protected function map($input, &$output);
+        abstract protected function map(mixed $input, mixed &$output): void;
 
-        public function getObject()
+        public function getObject(): mixed
         {
             return $this->result;
         }

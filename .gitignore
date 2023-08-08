@@ -2,5 +2,3 @@ vendor
 tmp/
 composer.lock
 .idea
-tests
-tests/

@@ -1,8 +1,11 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Mappers;
 
     use Ataccama\Common\Env\Entry;
+    use Ataccama\Common\Env\Prototypes\IntegerId;
+    use Ataccama\Common\Env\Prototypes\StringId;
     use Ataccama\Eye\Client\Env\Activities\Activity;
     use Ataccama\Eye\Client\Env\Activities\Metadata;
     use Ataccama\Eye\Client\Env\Activities\Type;
@@ -16,9 +19,9 @@
      */
     final class ActivityMapper extends Mapper
     {
-        protected function map($input, &$output)
+        protected function map(mixed $input, mixed &$output): void
         {
-            $activity = new Activity($input->id, DateTime::from($input->dtCreated), new Entry($input->sessionId),
+            $activity = new Activity($input->id, DateTime::from($input->dtCreated), new StringId($input->sessionId),
                 new Type($input->type->id, $input->type->name), $input->ipAddress);
             if (!empty($input->country)) {
                 $activity->countryCode = $input->country->iso2;

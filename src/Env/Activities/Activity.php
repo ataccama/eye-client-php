@@ -1,10 +1,11 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
 
-    use Ataccama\Common\Env\BaseEntry;
     use Ataccama\Common\Env\IArray;
-    use Ataccama\Common\Env\IEntry;
+    use Ataccama\Common\Interfaces\IdentifiableByInteger;
+    use Ataccama\Common\Interfaces\IdentifiableByString;
     use Ataccama\Common\Utils\Comparator\Comparable;
     use Nette\Utils\DateTime;
 
@@ -13,33 +14,31 @@
      * Class Activity
      * @package Ataccama\Eye\Env\Activities
      * @property-read DateTime $dtCreated
+     * @property-read int      $id
      */
-    class Activity extends ActivityDefinition implements IEntry, Comparable, IArray
+    class Activity extends ActivityDefinition implements IdentifiableByInteger, Comparable, IArray
     {
-        use BaseEntry;
-
-        /** @var DateTime */
-        protected $dtCreated;
-
-        /** @var MetadataList */
-        public $metadata;
-
-        /** @var string */
-        public $countryCode;
-
-        /** @var IEntry */
-        public $user;
+        public readonly int $id;
+        public readonly DateTime $dtCreated;
+        public MetadataList $metadata;
+        public ?string $countryCode;
+        public ?IdentifiableByInteger $user;
 
         /**
          * Activity constructor.
-         * @param int      $id
-         * @param DateTime $dtCreated
-         * @param IEntry   $session
-         * @param Type     $type
-         * @param string   $ipAddress
+         * @param int                   $id
+         * @param DateTime              $dtCreated
+         * @param IdentifiableByString $session
+         * @param Type                  $type
+         * @param string|null           $ipAddress
          */
-        public function __construct(int $id, DateTime $dtCreated, IEntry $session, Type $type, string $ipAddress = null)
-        {
+        public function __construct(
+            int $id,
+            DateTime $dtCreated,
+            IdentifiableByString $session,
+            Type $type,
+            ?string $ipAddress = null
+        ) {
             parent::__construct($session, $type, $ipAddress);
             $this->id = $id;
             $this->dtCreated = $dtCreated;
@@ -70,5 +69,10 @@
                 "tags"        => $this->tags->toArray(),
                 "metadata"    => $this->metadata->toArray()
             ];
+        }
+
+        public function getId(): int
+        {
+            return $this->id;
         }
     }

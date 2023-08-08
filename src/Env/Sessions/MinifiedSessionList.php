@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Env\Sessions;
 
@@ -15,12 +16,15 @@
     {
         use SmartObject;
 
+
         /**
          * @param MinifiedSession $session
          */
-        public function add($session)
+        public function add($session): self
         {
             parent::add($session);
+
+            return $this;
         }
 
         /**

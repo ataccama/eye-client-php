@@ -16,11 +16,9 @@
     {
         use SmartObject;
 
-        /** @var int */
-        protected $id;
 
-        /** @var string */
-        protected $name;
+        public readonly int $id;
+        public readonly string $name;
 
         /**
          * Consent constructor.

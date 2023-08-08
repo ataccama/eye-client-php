@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Tags;
 
@@ -17,8 +18,9 @@
     {
         use SmartObject;
 
+
         /** @var int[] */
-        private $stats = [];
+        private array $stats = [];
 
         /**
          * TagCounter constructor.

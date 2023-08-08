@@ -10,10 +10,9 @@
      * Class ConsentTypesKey
      * @package Env\CacheKeys
      */
-    class ConsentTypesKey implements IKey
+    readonly class ConsentTypesKey implements IKey
     {
-        /** @var string */
-        private $id;
+        public string $id;
 
         /**
          * ActivityListKey constructor.
@@ -23,7 +22,7 @@
             $this->id = "all";
         }
 
-        public function getId()
+        public function getId(): string
         {
             return $this->id;
         }

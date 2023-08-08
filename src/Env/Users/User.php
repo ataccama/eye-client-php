@@ -1,25 +1,25 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Users;
 
-    use Ataccama\Common\Env\BaseEntry;
     use Ataccama\Common\Env\Email;
     use Ataccama\Common\Env\IArray;
-    use Ataccama\Common\Env\IEntry;
     use Ataccama\Common\Env\Name;
+    use Ataccama\Common\Interfaces\IdentifiableByInteger;
     use Nette\Utils\DateTime;
 
 
     /**
      * Class User
      * @package Ataccama\Eye\Env\Users
+     * @property-read int      $id
+     * @property-read DateTime $dtCreated
      */
-    class User extends UserDefinition implements IEntry, IArray
+    class User extends UserDefinition implements IdentifiableByInteger, IArray
     {
-        use BaseEntry;
-
-        /** @var DateTime */
-        protected $dtCreated;
+        public readonly int $id;
+        public readonly DateTime $dtCreated;
 
         /**
          * User constructor.
@@ -50,5 +50,10 @@
             $array["id"] = $this->id;
 
             return $array;
+        }
+
+        public function getId(): int
+        {
+            return $this->id;
         }
     }

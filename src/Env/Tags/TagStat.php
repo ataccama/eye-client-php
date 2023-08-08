@@ -1,5 +1,5 @@
 <?php
-
+    declare(strict_types=1);
 
     namespace Env\Tags;
 
@@ -18,11 +18,9 @@
     {
         use SmartObject;
 
-        /** @var string */
-        protected $name;
 
-        /** @var int */
-        protected $count;
+        protected string $name;
+        protected int $count;
 
         /**
          * TagStat constructor.
@@ -40,7 +38,7 @@
             return $this->count;
         }
 
-        public function getKey()
+        public function getKey(): string
         {
             return $this->name;
         }

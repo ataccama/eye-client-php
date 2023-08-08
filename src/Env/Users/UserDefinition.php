@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Users;
 
@@ -15,37 +16,18 @@
     {
         use Person;
 
-        /** @var string */
-        public $keycloakId;
 
-        /** @var string */
-        public $industry;
-
-        /** @var bool */
-        public $acceptedTerms;
-
-        /** @var bool */
-        public $emailUpdates;
-
-        /** @var string */
-        public $ipAddress;
-
-        /** @var string|null */
-        public $office;
-
-        /** @var string|null */
-        public $jobTitle;
-
-        /** @var string|null */
-        public $city;
-
-        /** @var string|null */
-        public $phone;
+        public ?string $keycloakId = null;
+        public ?string $industry = null;
+        public bool $acceptedTerms = false;
+        public bool $emailUpdates = false;
+        public ?string $ipAddress;
+        public ?string $office = null;
 
         /**
          * UserDefinition constructor.
-         * @param Name   $name
-         * @param Email  $email
+         * @param Name        $name
+         * @param Email       $email
          * @param string|null $ipAddress
          */
         public function __construct(Name $name, Email $email, string $ipAddress = null)

@@ -1,4 +1,6 @@
 <?php
+    declare(strict_types=1);
+
     namespace Ataccama\Eye\Client\Mappers;
 
     use Ataccama\Common\Env\Email;
@@ -28,7 +30,7 @@
             return parent::getObject();
         }
 
-        protected function map($input, &$output)
+        protected function map(mixed $input, mixed &$output): void
         {
             $user = new User($input->id, DateTime::from($input->dtCreated), new Name($input->name),
                 new Email($input->email), $input->ipAddress);

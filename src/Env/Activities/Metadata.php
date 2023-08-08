@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
 
@@ -13,8 +14,7 @@
      */
     class Metadata extends MetadataDefinition implements IArray
     {
-        /** @var string */
-        protected $url;
+        protected ?string $url;
 
         /**
          * @return string|null

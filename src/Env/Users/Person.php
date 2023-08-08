@@ -13,36 +13,24 @@
      */
     trait Person
     {
-        /** @var Name */
-        public $name;
+        public Name $name;
+        public Email $email;
+        public ?string $organization = null;
+        public ?string $jobTitle = null;
+        public ?string $country = null;
 
-        /** @var Email */
-        public $email;
+        //        /** @var string */
+        //        public $state;
 
-        /** @var string */
-        public $organization;
+        public ?string $city = null;
 
-        /** @var string */
-        public $jobTitle;
+        //        /** @var string */
+        //        public $street;
+        //
+        //        /** @var string */
+        //        public $zipcode;
+        public ?string $phone = null;
 
-        /** @var string */
-        public $country;
-
-//        /** @var string */
-//        public $state;
-
-        /** @var string */
-        public $city;
-
-//        /** @var string */
-//        public $street;
-//
-//        /** @var string */
-//        public $zipcode;
-
-        /** @var string */
-        public $phone;
-
-//        /** @var DateTime */
-//        public $dtModified;
+        //        /** @var DateTime */
+        //        public $dtModified;
     }

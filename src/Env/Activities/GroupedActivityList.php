@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
 
@@ -16,7 +17,7 @@
         /**
          * @param Activity $activity
          */
-        public function add($activity)
+        public function add($activity): self
         {
             $groupId = $activity->dtCreated->format("Ymd") . sprintf('%03d', $activity->type->id);
 
@@ -25,6 +26,8 @@
             }
 
             $this->items[$groupId]->add($activity);
+
+            return $this;
         }
 
         /**
@@ -52,9 +55,9 @@
         /**
          * @param bool             $type
          * @param IComparator|null $comparator
-         * @return $this|BaseArray|bool
+         * @return GroupedActivityList
          */
-        public function sort(bool $type = Sorter::ASC, IComparator $comparator = null)
+        public function sort(bool $type = Sorter::ASC, IComparator $comparator = null): self
         {
             $indexes = array_keys($this->items);
             if ($type) {

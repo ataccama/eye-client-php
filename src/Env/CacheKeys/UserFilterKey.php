@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\CacheKeys;
 
@@ -10,10 +11,9 @@
      * Class UserFilterKey
      * @package Ataccama\Eye\Client\Env\CacheKeys
      */
-    class UserFilterKey implements IKey
+    readonly class UserFilterKey implements IKey
     {
-        /** @var string */
-        private $id;
+        public string $id;
 
         const PREFIX = "eye_api_user_filter";
 
@@ -24,7 +24,7 @@
         public function __construct(Filter $filter)
         {
             if (!empty($filter->email)) {
-                $this->id = $filter->email;
+                $this->id = $filter->email->definition;
             } elseif (!empty($filter->session)) {
                 $this->id = $filter->session->id;
             } elseif (!empty($filter->keycloakId)) {
@@ -32,7 +32,7 @@
             }
         }
 
-        public function getId()
+        public function getId(): string
         {
             return $this->id;
         }

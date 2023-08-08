@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Users;
 
@@ -14,9 +15,11 @@
         /**
          * @param User $user
          */
-        public function add($user)
+        public function add($user): self
         {
             $this->items[$user->id] = $user;
+
+            return $this;
         }
 
         /**

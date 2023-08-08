@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
 
@@ -19,26 +20,17 @@
         const CONTINENTS = "continents";
         const METADATA_SEARCH = "metadata_search";
 
-        /** @var Email|null */
-        public $email;
-
-        /** @var string|null */
-        public $ipAddress;
+        public ?Email $email;
+        public ?string $ipAddress;
 
         /** @var int[] */
-        public $typeIds;
+        public array $typeIds;
 
         /** @var string[] */
-        public $continents;
-
-        /** @var DateTime */
-        public $dtFrom;
-
-        /** @var DateTime */
-        public $dtTo;
-
-        /** @var MetadataSearch|null */
-        public $metadataSearch;
+        public array $continents;
+        public DateTime $dtFrom;
+        public DateTime $dtTo;
+        public ?MetadataSearch $metadataSearch;
 
         /**
          * ActivityFilter constructor.

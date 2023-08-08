@@ -16,14 +16,14 @@
          * @param ConsentType $consentType
          * @return ConsentTypeList
          */
-        public function add($consentType)
+        public function add($consentType): self
         {
             $this->items[$consentType->id] = $consentType;
 
             return $this;
         }
 
-        public function current(): ConsentType
+        public function current(): ?ConsentType
         {
             return parent::current();
         }

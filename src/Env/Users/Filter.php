@@ -1,11 +1,12 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Users;
 
     use Ataccama\Common\Env\Email;
-    use Ataccama\Common\Env\Entry;
-    use Ataccama\Common\Env\IEntry;
+    use Ataccama\Common\Env\Prototypes\StringId;
     use Ataccama\Common\Exceptions\NotDefined;
+    use Ataccama\Common\Interfaces\IdentifiableByString;
     use Nette\InvalidArgumentException;
     use Nette\Utils\Validators;
 
@@ -21,17 +22,10 @@
         const ID = "user_id";
         const SESSION = "session_id";
 
-        /** @var Email|null */
-        public $email;
-
-        /** @var int|null */
-        public $id;
-
-        /** @var IEntry|null */
-        public $session;
-
-        /** @var string|null */
-        public $keycloakId;
+        public ?Email $email;
+        public ?int $id;
+        public ?IdentifiableByString $session;
+        public ?string $keycloakId;
 
         /**
          * Filter constructor.
@@ -76,10 +70,10 @@
 
             // session
             if (isset($params[self::SESSION])) {
-                if ($params[self::SESSION] instanceof IEntry) {
+                if ($params[self::SESSION] instanceof IdentifiableByString) {
                     $this->session = $params[self::SESSION];
                 } elseif (!empty(self::SESSION)) {
-                    $this->session = new Entry($params[self::SESSION]);
+                    $this->session = new StringId($params[self::SESSION]);
                 } else {
                     throw new InvalidArgumentException("Invalid parameter SESSION. Must be valid an object of the interface IEntry.");
                 }

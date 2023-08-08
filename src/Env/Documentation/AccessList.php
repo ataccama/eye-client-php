@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Products;
 
@@ -14,15 +15,17 @@
         /**
          * @param ProductAccess $access
          */
-        public function add($access)
+        public function add($access): self
         {
             parent::add($access);
+
+            return $this;
         }
 
         /**
-         * @return ProductAccess
+         * @return ProductAccess|null
          */
-        public function current(): ProductAccess
+        public function current(): ?ProductAccess
         {
             return parent::current();
         }

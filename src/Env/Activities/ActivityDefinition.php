@@ -1,8 +1,9 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Activities;
 
-    use Ataccama\Common\Env\IEntry;
+    use Ataccama\Common\Interfaces\IdentifiableByString;
     use Ataccama\Eye\Client\Env\Tags\TagList;
     use Nette\SmartObject;
 
@@ -10,33 +11,27 @@
     /**
      * Class ActivityDefinition
      * @package Ataccama\Eye\Env\Activities
-     * @property-read IEntry      $session
-     * @property-read Type        $type
-     * @property-read string|null $ipAddress
+     * @property-read IdentifiableByString $session
+     * @property-read Type                 $type
+     * @property-read string|null          $ipAddress
      */
     class ActivityDefinition
     {
         use SmartObject;
 
-        /** @var IEntry */
-        protected $session;
 
-        /** @var Type */
-        protected $type;
-
-        /** @var string|null */
-        protected $ipAddress;
-
-        /** @var TagList */
-        public $tags;
+        protected IdentifiableByString $session;
+        protected Type $type;
+        protected ?string $ipAddress;
+        public TagList $tags;
 
         /**
          * ActivityDefinition constructor.
-         * @param IEntry $session
-         * @param Type   $type
-         * @param string $ipAddress
+         * @param IdentifiableByString $session
+         * @param Type                 $type
+         * @param string|null          $ipAddress
          */
-        public function __construct(IEntry $session, Type $type, string $ipAddress = null)
+        public function __construct(IdentifiableByString $session, Type $type, ?string $ipAddress = null)
         {
             $this->session = $session;
             $this->type = $type;
@@ -45,9 +40,9 @@
         }
 
         /**
-         * @return IEntry
+         * @return IdentifiableByString
          */
-        public function getSession(): IEntry
+        public function getSession(): IdentifiableByString
         {
             return $this->session;
         }

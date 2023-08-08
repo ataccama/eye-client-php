@@ -1,4 +1,5 @@
 <?php
+    declare(strict_types=1);
 
     namespace Ataccama\Eye\Client\Env\Users;
 
@@ -18,34 +19,23 @@
      */
     class Profile extends User
     {
-        /** @var MinifiedSessionList */
-        public $sessions;
-
-        /** @var AccessList */
-        public $documentation;
-
-        /** @var Type */
-        public $support;
-
-        /** @var TagStats */
-        public $tags;
-
-        /** @var ConsentList */
-        public $consents;
+        public MinifiedSessionList $sessions;
+        public AccessList $documentation;
+        public Type $support;
+        public TagStats $tags;
+        public ConsentList $consents;
 
         /**
          * User constructor.
-         * @param int      $id
-         * @param DateTime $dtCreated
-         * @param Name     $name
-         * @param Email    $email
-         * @param string   $ipAddress
+         * @param int         $id
+         * @param DateTime    $dtCreated
+         * @param Name        $name
+         * @param Email       $email
+         * @param string|null $ipAddress
          */
         public function __construct(int $id, DateTime $dtCreated, Name $name, Email $email, string $ipAddress = null)
         {
             parent::__construct($id, $dtCreated, $name, $email, $ipAddress);
-            $this->id = $id;
-            $this->dtCreated = $dtCreated;
             $this->sessions = new MinifiedSessionList();
             $this->support = Type::none();
             $this->documentation = new AccessList();
@@ -64,11 +54,11 @@
             $profile->keycloakId = $user->keycloakId;
             $profile->emailUpdates = $user->emailUpdates;
             $profile->acceptedTerms = $user->acceptedTerms;
-//            $profile->dtModified = $user->dtModified;
+            //            $profile->dtModified = $user->dtModified;
             $profile->phone = $user->phone;
-//            $profile->zipcode = $user->zipcode;
-//            $profile->street = $user->street;
-//            $profile->state = $user->state;
+            //            $profile->zipcode = $user->zipcode;
+            //            $profile->street = $user->street;
+            //            $profile->state = $user->state;
             $profile->city = $user->city;
             $profile->country = $user->country;
             $profile->organization = $user->organization;
