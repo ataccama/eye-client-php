@@ -151,7 +151,7 @@
                     // ok
                     $session = new Session($curl->response->id, DateTime::from($curl->response->dtCreated),
                         DateTime::from($curl->response->dtExpired), $curl->response->ipAddress,
-                        !empty($curl->response->userId) ? new IntegerId($curl->response->userId) : null);
+                        !empty($curl->response->userId) ? new IntegerId((int)$curl->response->userId) : null);
 
                     foreach ($curl->response->activities as $activity) {
                         $session->activities->add((new ActivityMapper($activity))->getObject());

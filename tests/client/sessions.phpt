@@ -20,4 +20,8 @@
             new \Ataccama\Common\Env\Prototypes\IntegerId($userId));
 
         \Tester\Assert::same(true, $retVal);
+
+        $session = $client->getSession(new \Ataccama\Common\Env\Prototypes\StringId($sessionId));
+
+        \Tester\Assert::same($sessionId,$session->getId());
     }
